@@ -13,6 +13,7 @@ using YoutubeExplode.Common;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos.Streams;
+using System.Text.RegularExpressions;
 
 namespace YoutubeDownloaderTesteForms
 {
@@ -85,7 +86,9 @@ namespace YoutubeDownloaderTesteForms
             if (checkBox1.Checked)
             {
                 var video = await youtube.Videos.GetAsync(textBox1.Text);
-                var title = video.Title.Replace("\""," ");
+                //var title = video.Title.Replace("\""," ");
+                Regex pattern = new Regex("[;,?*\\'\" ]");
+                var title = pattern.Replace(video.Title, " ");
                 await youtube.Videos.DownloadAsync(textBox1.Text, $"{path}" + "\\" + $"{title}.mp3");                
             }
 
@@ -95,7 +98,9 @@ namespace YoutubeDownloaderTesteForms
                 var videos = await youtube.Playlists.GetVideosAsync(playlist);
                 foreach (var videoPlaylist in videos)
                 {
-                    var title = videoPlaylist.Title.Replace("\""," ");
+                    //var title = videoPlaylist.Title.Replace("\""," ");
+                    Regex pattern = new Regex("[;,?*\\'\" ]");
+                    var title = pattern.Replace(videoPlaylist.Title, " ");
                     var urlvideo = videoPlaylist.Url;
                     await youtube.Videos.DownloadAsync(urlvideo, $"{path}" + "\\" + $"{title}.mp3");
                 }
